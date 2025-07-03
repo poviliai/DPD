@@ -100,11 +100,5 @@ git commit -m "Update README.md and developer guide"
 * Add a README.md to explain changes
 
 ---
-🧠 Підсумок
-Ціль	Команда
-Подивитися історію	git log --oneline
-Відкотити файли на версію	git checkout <commit-hash> .
-Відкотити останній коміт	git reset --hard HEAD~1
-Залити на сервер	Ctrl + S (через ftp-simple)
 
 Created by: **Viktoriia Poviliai**
