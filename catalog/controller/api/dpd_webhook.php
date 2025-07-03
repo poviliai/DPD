@@ -39,6 +39,9 @@ class DpdWebhook extends Controller {
             return;
         }
 
+        // Ensure the tracking table exists
+        $this->createTrackingTableIfNotExists();
+
         // Get the JSON payload
         $input = file_get_contents('php://input');
         $data = json_decode($input, true);
@@ -53,10 +56,29 @@ class DpdWebhook extends Controller {
         $log = new \Opencart\System\Library\Log('dpd_webhook.log');
         $log->write('Received DPD Webhook: ' . print_r($data, true));
 
-        // TODO: Save to DB if needed
-        // $this->db->query("INSERT INTO " . DB_PREFIX . "dpd_tracking_events SET ...");
+        // Save to database
+        $this->db->query("INSERT INTO `" . DB_PREFIX . "dpd_tracking_events` SET
+            `parcel_number` = '" . $this->db->escape($data['parcelNumber'] ?? '') . "',
+            `event_code` = '" . $this->db->escape($data['eventCode'] ?? '') . "',
+            `event_description` = '" . $this->db->escape($data['description'] ?? '') . "',
+            `event_time` = NOW(),
+            `raw_data` = '" . $this->db->escape(json_encode($data)) . "'
+        ");
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode(['status' => 'success']));
+    }
+
+    protected function createTrackingTableIfNotExists(): void {
+        $this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "dpd_tracking_events` (
+            `dpd_event_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            `parcel_number` VARCHAR(20) NOT NULL,
+            `event_code` VARCHAR(10) DEFAULT '',
+            `event_description` VARCHAR(255) DEFAULT '',
+            `event_time` DATETIME NOT NULL,
+            `raw_data` TEXT,
+            PRIMARY KEY (`dpd_event_id`),
+            INDEX (`parcel_number`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
     }
 }
