@@ -101,4 +101,55 @@ git commit -m "Update README.md and developer guide"
 
 ---
 
+## 🔁 How to Revert to a Previous Version
+
+### 1. View commit history
+
+```bash
+git log --oneline
+```
+
+Example output:
+
+```
+fe21c6f Fix label issue
+9a2f4cb Add webhook support
+273a8f1 Initial import from FTP
+```
+
+### 2. Revert files to a previous commit
+
+```bash
+git checkout <commit-hash> .
+```
+
+For example:
+
+```bash
+git checkout 9a2f4cb .
+```
+
+### 3. Save files to update on server
+
+* Just press `Ctrl + S` in VS Code
+* ftp-simple will automatically upload the reverted files to the server
+
+### 4. (Optional) Commit the revert to Git
+
+```bash
+git add .
+git commit -m "Revert to previous working version"
+git push origin main
+```
+
+### Alternative: revert last commit entirely
+
+```bash
+git reset --hard HEAD~1
+```
+
+⚠️ This removes the last commit and changes. Use with caution.
+
+---
+
 Created by: **Viktoriia Poviliai**
