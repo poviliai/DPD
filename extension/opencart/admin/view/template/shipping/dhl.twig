@@ -1,0 +1,143 @@
+{{ header }}
+{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <h1>{{ heading_title }}</h1>
+        <div class="float-end">
+           <button type="submit" form="form-dhl" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-save"></i></button>
+            <a href="{{ cancel }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a>
+        </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col">
+             <!-- // -->
+
+              <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-dhl" class="form-horizontal">
+                <ul class="nav nav-tabs mb-3" role="tablist" style="font-size:18px;font-weight:bold;">
+                  <li class="nav-item me-4" role="presentation">
+                    <button class="nav-link active" id="tab-general-tab" data-bs-toggle="tab" data-bs-target="#tab-general" type="button" role="tab" aria-controls="tab-general" aria-selected="true">{{ tab_general }}</button>
+                  </li>
+                  <li class="nav-item me-4" role="presentation">
+                    <button class="nav-link" id="tab-access-tab" data-bs-toggle="tab" data-bs-target="#tab-access" type="button" role="tab" aria-controls="tab-access" aria-selected="false">{{ tab_access }}</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-test-tab" data-bs-toggle="tab" data-bs-target="#tab-test" type="button" role="tab" aria-controls="tab-test" aria-selected="false">{{ tab_test_mode }}</button>
+                  </li>
+                </ul>
+
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab-general">
+                    <div class="form-group row mb-2">
+                      <label class="col-sm-2 col-form-label" for="input-status">{{ entry_status }}</label>
+                      <div class="col-sm-10">
+                        <select name="shipping_dhl_status" id="input-status" class="form-control">
+                          <option value="1" {{ shipping_dhl_status ? 'selected' : '' }}>{{ text_enabled }}</option>
+                          <option value="0" {{ not shipping_dhl_status ? 'selected' : '' }}>{{ text_disabled }}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <fieldset>
+                      <legend>{{ legend_shipper }}</legend>
+                      {% for field in [
+                        {'name': 'shipper_name', 'label': entry_shipper_name},
+                        {'name': 'shipper_street', 'label': entry_shipper_street},
+                        {'name': 'shipper_home_number', 'label': entry_shipper_home_number},
+                        {'name': 'shipper_postcode', 'label': entry_shipper_postcode},
+                        {'name': 'shipper_city', 'label': entry_shipper_city},
+                        {'name': 'shipper_tel', 'label': entry_shipper_tel},
+                        {'name': 'shipper_email', 'label': entry_shipper_email},
+                        {'name': 'shipper_contact_person', 'label': entry_shipper_contact_person}
+                      ] %}
+                      <div class="form-group row mb-2">
+                        <label class="col-sm-2 col-form-label" for="input-{{ field.name }}">{{ field.label }}</label>
+                        <div class="col-sm-10">
+                          <input type="text" name="shipping_dhl_{{ field.name }}" value="{{ attribute(_context, 'shipping_dhl_' ~ field.name) }}" id="input-{{ field.name }}" placeholder="{{ field.label }}" class="form-control" />
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </fieldset>
+
+                    <fieldset>
+                      <legend>{{ legend_app_credentials }} <span class="ms-2"><a style="color:red;font-size:10px;"  href='https://developer.dhl.com/' target='_blank'><i class="fa-solid fa-info-circle"></i> {{ text_dhl_developer_link }}</a></span></legend>
+
+                      <div class="form-group row mb-2">
+                        <label class="col-sm-2 col-form-label" for="input-application-id">{{ entry_application_id }}</label>
+                        <div class="col-sm-10">
+                          <input type="text" name="shipping_dhl_application_id" value="{{ shipping_dhl_application_id }}" id="input-application-id" placeholder="{{ entry_application_id }}" class="form-control" />
+                        </div>
+                      </div>
+
+                      <div class="form-group row mb-2">
+                        <label class="col-sm-2 col-form-label" for="input-application-token">{{ entry_application_token }}</label>
+                        <div class="col-sm-10">
+                          <input type="password" name="shipping_dhl_application_token" value="{{ shipping_dhl_application_token }}" id="input-application-token" placeholder="{{ entry_application_token }}" class="form-control" />
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+
+                  <div class="tab-pane" id="tab-access">
+                    <legend>{{ legend_access }}</legend>
+
+                    {% for field in [
+                      {'name': 'account', 'label': entry_dhl_user_account},
+                      {'name': 'password_account', 'label': entry_dhl_password_account},
+                      {'name': 'product', 'label': entry_dhl_product},
+                      {'name': 'ekp_number', 'label': entry_dhl_ekp_number},
+                      {'name': 'procedure', 'label': entry_dhl_procedure},
+                      {'name': 'participation', 'label': entry_dhl_participation},
+                      {'name': 'billing_number', 'label': entry_dhl_billing_number}
+                    ] %}
+                    <div class="form-group row mb-2">
+                      <label class="col-sm-2 col-form-label" for="input-{{ field.name }}">{{ field.label }}</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="dhl_user_{{ field.name }}" value="{{ attribute(_context, 'dhl_user_' ~ field.name) }}" placeholder="{{ field.label }}" id="input-{{ field.name }}" class="form-control" />
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+
+                  <div class="tab-pane" id="tab-test">
+                    <fieldset>
+                      <legend>{{ legend_test_mode }}</legend>
+
+                      <div class="form-group row mb-2">
+                        <label class="col-sm-2 col-form-label" for="input-test_mode">{{ entry_sandbox_mode }}</label>
+                        <div class="col-sm-10">
+                          <select name="dhl_test_mode" id="input-test_mode" class="form-control">
+                            <option value="yes" {{ dhl_test_mode == 'yes' ? 'selected' : '' }}>{{ text_yes }}</option>
+                            <option value="no" {{ dhl_test_mode == 'no' ? 'selected' : '' }}>{{ text_no }}</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group row mb-2">
+                        <label class="col-sm-2 col-form-label" for="input-developer_id">{{ entry_developer_id }}</label>
+                        <div class="col-sm-10">
+                          <input type="text" name="dhl_test_developer_id" value="{{ dhl_test_developer_id }}" placeholder="{{ entry_developer_id }}" id="input-developer_id" class="form-control" />
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="input-password-developer_id">{{ entry_developer_password }}</label>
+                        <div class="col-sm-10">
+                          <input type="password" name="dhl_test_developer_password" value="{{ dhl_test_developer_password }}" placeholder="{{ entry_developer_password }}" id="input-password-developer_id" class="form-control" />
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                </div>
+              </form>
+
+
+             <!---// -->
+      
+        </div>
+    </div> 
+  </div>
+</div>
+{{ footer }}
